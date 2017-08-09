@@ -22,14 +22,17 @@ VideoCapture *VideoFaceDetector::videoCapture() const
 
 void VideoFaceDetector::setFaceCascade(const std::string cascadeFilePath)
 {
-	if (m_faceCascade == NULL) {
+	if (m_faceCascade == NULL) 
+	{
 		m_faceCascade = new  CascadeClassifier(cascadeFilePath);
 	}
-	else {
+	else 
+	{
 		m_faceCascade->load(cascadeFilePath);
 	}
 
-	if (m_faceCascade->empty()) {
+	if (m_faceCascade->empty()) 
+	{
 		std::cerr << "Error creating cascade classifier. Make sure the file" << std::endl
 			<< cascadeFilePath << " exists." << std::endl;
 	}
@@ -85,7 +88,8 @@ double VideoFaceDetector::templateMatchingMaxDuration() const
 
 VideoFaceDetector::~VideoFaceDetector()
 {
-	if (m_faceCascade != NULL) {
+	if (m_faceCascade != NULL) 
+	{
 		delete m_faceCascade;
 	}
 }
@@ -102,19 +106,23 @@ Rect VideoFaceDetector::doubleRectSize(const  Rect &inputRect, const  Rect &fram
 	outputRect.y = inputRect.y - inputRect.height / 2;
 
 	// Handle edge cases
-	if (outputRect.x < frameSize.x) {
+	if (outputRect.x < frameSize.x) 
+	{
 		outputRect.width += outputRect.x;
 		outputRect.x = frameSize.x;
 	}
-	if (outputRect.y < frameSize.y) {
+	if (outputRect.y < frameSize.y) 
+	{
 		outputRect.height += outputRect.y;
 		outputRect.y = frameSize.y;
 	}
 
-	if (outputRect.x + outputRect.width > frameSize.width) {
+	if (outputRect.x + outputRect.width > frameSize.width) 
+	{
 		outputRect.width = frameSize.width - outputRect.x;
 	}
-	if (outputRect.y + outputRect.height > frameSize.height) {
+	if (outputRect.y + outputRect.height > frameSize.height) 
+	{
 		outputRect.height = frameSize.height - outputRect.y;
 	}
 
@@ -131,9 +139,12 @@ Rect VideoFaceDetector::biggestFace(std::vector< Rect> &faces) const
 	assert(!faces.empty());
 
 	Rect *biggest = &faces[0];
-	for (auto &face : faces) {
+	for (auto &face : faces) 
+	{
 		if (face.area() < biggest->area())
+		{
 			biggest = &face;
+		}
 	}
 	return *biggest;
 }
@@ -222,7 +233,8 @@ void VideoFaceDetector::detectFacesTemplateMatching(const  Mat &frame)
 
 	// If template matching lasts for more than 2 seconds face is possibly lost
 	// so disable it and redetect using cascades
-	if (duration > m_templateMatchingMaxDuration) {
+	if (duration > m_templateMatchingMaxDuration) 
+	{
 		m_foundFace = false;
 		m_templateMatchingRunning = false;
 		m_templateMatchingStartTime = m_templateMatchingCurrentTime = 0;
@@ -232,7 +244,8 @@ void VideoFaceDetector::detectFacesTemplateMatching(const  Mat &frame)
 	}
 
 	// Edge case when face exits frame while 
-	if (m_faceTemplate.rows * m_faceTemplate.cols == 0 || m_faceTemplate.rows <= 1 || m_faceTemplate.cols <= 1) {
+	if (m_faceTemplate.rows * m_faceTemplate.cols == 0 || m_faceTemplate.rows <= 1 || m_faceTemplate.cols <= 1) 
+	{
 		m_foundFace = false;
 		m_templateMatchingRunning = false;
 		m_templateMatchingStartTime = m_templateMatchingCurrentTime = 0;
@@ -280,10 +293,14 @@ Point VideoFaceDetector::getFrameAndDetect(Mat &frame)
 	resize(frame, resizedFrame, resizedFrameSize);
 
 	if (!m_foundFace)
+	{
 		detectFaceAllSizes(resizedFrame); // Detect using cascades over whole image
-	else {
+	}
+	else 
+	{
 		detectFaceAroundRoi(resizedFrame); // Detect using cascades only in ROI
-		if (m_templateMatchingRunning) {
+		if (m_templateMatchingRunning) 
+		{
 			detectFacesTemplateMatching(resizedFrame); // Detect using template matching
 		}
 	}

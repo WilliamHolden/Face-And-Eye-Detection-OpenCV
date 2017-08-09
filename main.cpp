@@ -15,7 +15,8 @@ int detectEyes(vector<Rect> &eyes, Mat &face, CascadeClassifier eyeD)
 {
 	vector<Rect> temp;
 	eyeD.detectMultiScale(face, temp, 1.15f, 3, CASCADE_SCALE_IMAGE, Size(face.rows / 5, face.rows / 5), Size(face.rows * 2 / 3, face.rows * 2 / 3));
-	if (temp.size()>1) {
+	if (temp.size() > 1) 
+	{
 		if (temp.at(0).x > temp.at(1).x) { eyes.push_back(temp.at(1)); eyes.push_back(temp.at(0)); }
 		else { eyes.push_back(temp.at(0)); eyes.push_back(temp.at(1)); }
 		return 1;
@@ -23,21 +24,24 @@ int detectEyes(vector<Rect> &eyes, Mat &face, CascadeClassifier eyeD)
 	return 0;
 }
 
-float getAngle(Point pt1, Point pt2) {
+float getAngle(Point pt1, Point pt2) 
+{
 	Point2f vect;
 	vect.x = pt1.x - pt2.x;
 	vect.y = pt1.y - pt2.y;
 	float angle = atan2(vect.y, vect.x);
-	if (vect.x != 0) {
+	if (vect.x != 0) 
+	{
 		return angle * (180 / PI);
 	}
-	return 0;	
+	return 0;
 }
 
 int main(int argc, char** argv)
 {
 	VideoCapture camera(0);
-	if (!camera.isOpened()) {
+	if (!camera.isOpened()) 
+	{
 		fprintf(stderr, "Error opening cam\n");
 		exit(1);
 	}
@@ -48,7 +52,8 @@ int main(int argc, char** argv)
 	CascadeClassifier eyeD;
 	eyeD.load(CASCADE_EYE_FILE);
 	Mat frame;
-	if (eyeD.empty()) {
+	if (eyeD.empty()) 
+	{
 		fprintf(stderr, "Error loading classifier\n");
 		exit(1);
 	}
@@ -63,13 +68,14 @@ int main(int argc, char** argv)
 			Rect tempFaceRect = detector.face();
 			rectangle(frame, tempFaceRect, Scalar(255, 0, 0));
 			Mat extFace(frame, tempFaceRect);
-			if (detectEyes(eyes, extFace, eyeD)) {
+			if (detectEyes(eyes, extFace, eyeD)) 
+			{
 				eyes[0].x += tempFaceRect.x;
 				eyes[0].y += tempFaceRect.y;
 				eyes[1].x += tempFaceRect.x;
 				eyes[1].y += tempFaceRect.y;
-				rectangle(frame, eyes.at(0),  Scalar(255, 0, 0));
-				rectangle(frame, eyes.at(1),  Scalar(255, 0, 0));
+				rectangle(frame, eyes.at(0), Scalar(255, 0, 0));
+				rectangle(frame, eyes.at(1), Scalar(255, 0, 0));
 				float faceAngle = getAngle(Point(eyes[0].x, eyes[0].y), Point(eyes[1].x, eyes[1].y));
 
 				ellipse(frame, Point(eyes[0].x + (eyes[0].width / 2), eyes[0].y + (eyes[0].height / 2)), Size(eyes[0].width / 2, eyes[0].height / 5), faceAngle, 0, 360, COLOR, -1);
