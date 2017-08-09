@@ -36,8 +36,6 @@ float getAngle(Point pt1, Point pt2) {
 
 int main(int argc, char** argv)
 {
-
-	// Try opening camera
 	VideoCapture camera(0);
 	if (!camera.isOpened()) {
 		fprintf(stderr, "Error opening cam\n");
@@ -54,10 +52,6 @@ int main(int argc, char** argv)
 		fprintf(stderr, "Error loading classifier\n");
 		exit(1);
 	}
-
-	int frame_width = camera.get(CV_CAP_PROP_FRAME_WIDTH);
-	int frame_height = camera.get(CV_CAP_PROP_FRAME_HEIGHT);
-	VideoWriter video("Result.wmv", CV_FOURCC('W', 'M', 'V', '2'), 20, Size(frame_width, frame_height), true);
 
 	while (true)
 	{
@@ -82,7 +76,6 @@ int main(int argc, char** argv)
 				ellipse(frame, Point(eyes[1].x + (eyes[1].width / 2), eyes[1].y + (eyes[1].height / 2)), Size(eyes[1].width / 2, eyes[1].height / 5), faceAngle, 0, 360, COLOR, -1);
 			}
 		}
-		video.write(frame);
 		imshow(WINDOW_NAME, frame);
 		if (waitKey(10) == 27) break;
 	}
